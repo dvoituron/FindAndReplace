@@ -18,7 +18,7 @@ namespace FindAndReplaceTests
         [TestCleanup]
         public void Cleanup()
         {
-            //Directory.Delete(BASE_FOLDER, recursive: true);
+            Directory.Delete(BASE_FOLDER, recursive: true);
         }
 
         [TestMethod]
@@ -103,8 +103,8 @@ namespace FindAndReplaceTests
         {
             string[] args = new string[] 
             {
-                @"-f=""'version': '\d.\d.\d\'""",       // 'version': 'x.x.x'
-                @"-r=""'version': '9.1.2'""",           // 'version': '9.1.2'
+                @"-f=""""version"": ""\d.\d.\d\""""",       // 'version': 'x.x.x'
+                @"-r=""""version"": ""9.1.2""""",           // 'version': '9.1.2'
                 @"-p=**/*.json",                        // All json in current and subfolders
                 $"-b={BASE_FOLDER}",                    // From base folder
                 //@"-d"                                 // In demo mode (no write file)
@@ -120,6 +120,31 @@ namespace FindAndReplaceTests
             manager.Start();
 
             Assert.AreEqual(2, manager.FilesMatched.Count);     
+        }
+
+        [TestMethod]
+        public void CommandLine_ModeJson_Tests()
+        {
+            string[] args = new string[]
+            {
+                @"-f=Version",
+                @"-r=9.1.3",
+                @"-p=**/*.json",
+                $"-b={BASE_FOLDER}",                    // From base folder
+                $"-m=JSON",                             // JSON Mode => Key / Value
+                @"-d"                                   // In demo mode (no write file)
+            };
+
+            var arguments = new Arguments(args);
+            var manager = new FindAndReplaceManager(arguments);
+            manager.Logger = (code, content) =>
+            {
+                if (code == 'C')
+                    Assert.IsTrue(content.Contains("\"Version\": \"9.1.3\""));
+            };
+            manager.Start();
+
+            Assert.AreEqual(3, manager.FilesMatched.Count);
         }
     }
 }

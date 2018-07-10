@@ -27,8 +27,8 @@ namespace FindAndReplace
                 var manager = new FindAndReplaceManager(arguments);
                 manager.Logger = (type, content) =>
                 {
-                    if (type == 'F')    // File Found => Display the filename
-                        Console.WriteLine(content);
+                    if (type == 'C')    // File Found => Display the filename
+                        Console.WriteLine("  . " + content);
                 };
                 manager.Start();
 

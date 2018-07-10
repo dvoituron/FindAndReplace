@@ -46,7 +46,7 @@ namespace FindAndReplace
                 if (newContent != content)
                 {
                     this.FilesMatched.Add(relativeFile);
-                    Logger?.Invoke('C', newContent);            // C = Content replaced
+                    Logger?.Invoke('C', relativeFile);            // C = Content replaced
                 }
             }
         }

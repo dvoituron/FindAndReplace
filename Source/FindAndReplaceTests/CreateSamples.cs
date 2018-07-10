@@ -22,10 +22,11 @@ namespace FindAndReplaceTests
         {
             string content =
 @"{
-  'runtimeOptions': {
-    'framework': {
-      'name': 'Microsoft.NETCore.App',
-      'version': '__VERSION__'
+  ""runtimeOptions"": {
+    ""framework"": {
+      ""name"": ""Microsoft.NETCore.App"",
+      ""version"": ""__VERSION__"",
+      ""info"": ""Hello"",
     }
   }
 }";

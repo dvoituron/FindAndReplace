@@ -1,8 +1,22 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
+    <Version>1.1.0</Version>
+    <PackageId>DVoituron.FindAndReplace</PackageId>
+    <Authors>Denis Voituron</Authors>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>FindAndReplace</ToolCommandName>
+    <PackageOutputPath>bin/nupkgs</PackageOutputPath>
+    <Description>A simple and intuitive command line tool to find regular expression and replace by new value.
+Ideal for automating configuration files for multiple environments</Description>
+    <PackageProjectUrl>https://github.com/dvoituron/FindAndReplace</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/dvoituron/FindAndReplace</RepositoryUrl>
+    <PackageTags>Find Replace Tool RegEx JSON</PackageTags>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Copyright>Copyright 2018 Denis Voituron</Copyright>
   </PropertyGroup>
 
 </Project>
