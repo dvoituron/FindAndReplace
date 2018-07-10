@@ -19,10 +19,12 @@ namespace FindAndReplace
             Console.WriteLine("   --Demo      | -d    Run the tool in Preview mode (without update files).");
             Console.WriteLine("   --Mode      | -m    Execution mode of the tool.");
             Console.WriteLine("                       By default, undefined.");
+            Console.WriteLine("                       JSon, find the key to replace by his value.");
             Console.WriteLine();
-            Console.WriteLine("Example:");
+            Console.WriteLine("Examples:");
             Console.WriteLine("  FindAndReplace --find=\"Version\" --replace=\"1.0.2\" --pattern=**/*.json --mode=json");
-            
+            Console.WriteLine("  FindAndReplace --find=\"([A-Z])\\w+\" --replace=\"XXX\" --pattern=**/*.txt");
+
         }
     }
 }
