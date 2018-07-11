@@ -25,10 +25,10 @@ namespace FindAndReplace
                 Console.WriteLine($"  Searching files for {arguments.Pattern}");
 
                 var manager = new FindAndReplaceManager(arguments);
-                manager.Logger = (type, content) =>
+                manager.Logger = (file, content) =>
                 {
-                    if (type == 'C')    // File Found => Display the filename
-                        Console.WriteLine("  . " + content);
+                    // Display the filename
+                    Console.WriteLine("  . " + file);
                 };
                 manager.Start();
 

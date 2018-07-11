@@ -26,7 +26,7 @@ namespace FindAndReplaceTests
         {
             string[] args = new string[]
             {
-                @"-f=Microsoft"                
+                @"-f=Microsoft"
             };
 
             var arguments = new Arguments(args);
@@ -43,13 +43,36 @@ namespace FindAndReplaceTests
             {
                 @"-f=Microsoft",
                 @"-r=Denis",
-                @"-p=*.json",                   
+                @"-p=*.json",
                 $"-b={BASE_FOLDER}",                    // From base folder
                 @"-d"                                   // In demo mode (no write file)
             };
 
             var arguments = new Arguments(args);
             var manager = new FindAndReplaceManager(arguments);
+            manager.Start();
+
+            Assert.AreEqual(1, manager.FilesMatched.Count);
+        }
+
+        [TestMethod]
+        public void CommandLine_AppSettingsJsonFile_Tests()
+        {
+            string[] args = new string[]
+            {
+                $"-f=\"ApiGlobalPrefix\"",
+                $"-r=Denis",
+                $"-p=*.json",
+                $"-b={BASE_FOLDER}",                    // From base folder
+                $"-d"                                   // In demo mode (no write file)
+            };
+
+            var arguments = new Arguments(args);
+            var manager = new FindAndReplaceManager(arguments);
+            manager.Logger = (file, content) =>
+            {
+                Assert.IsTrue(content.Contains("Denis"));
+            };
             manager.Start();
 
             Assert.AreEqual(1, manager.FilesMatched.Count);
@@ -79,7 +102,7 @@ namespace FindAndReplaceTests
         {
             string[] args = new string[]
             {
-                @"-f=Microsoft",       
+                @"-f=Microsoft",
                 @"-r=Denis",
                 @"-p=**/*.json",                        // All json in current and subfolders
                 $"-b={BASE_FOLDER}",                    // From base folder
@@ -88,10 +111,9 @@ namespace FindAndReplaceTests
 
             var arguments = new Arguments(args);
             var manager = new FindAndReplaceManager(arguments);
-            manager.Logger = (code, content) =>
+            manager.Logger = (file, content) =>
             {
-                if (code == 'C')
-                    Assert.IsTrue(content.Contains("Denis"));
+                Assert.IsTrue(content.Contains("Denis"));
             };
             manager.Start();
 
@@ -101,7 +123,7 @@ namespace FindAndReplaceTests
         [TestMethod]
         public void CommandLine_RegExVersion_AllJsonFiles_Tests()
         {
-            string[] args = new string[] 
+            string[] args = new string[]
             {
                 @"-f=""""version"": ""\d.\d.\d\""""",       // 'version': 'x.x.x'
                 @"-r=""""version"": ""9.1.2""""",           // 'version': '9.1.2'
@@ -112,14 +134,13 @@ namespace FindAndReplaceTests
 
             var arguments = new Arguments(args);
             var manager = new FindAndReplaceManager(arguments);
-            manager.Logger = (code, content) =>
+            manager.Logger = (file, content) =>
             {
-                if (code == 'C')
-                    Assert.IsTrue(content.Contains("9.1.2"));
+                Assert.IsTrue(content.Contains("9.1.2"));
             };
             manager.Start();
 
-            Assert.AreEqual(2, manager.FilesMatched.Count);     
+            Assert.AreEqual(2, manager.FilesMatched.Count);
         }
 
         [TestMethod]
@@ -137,10 +158,9 @@ namespace FindAndReplaceTests
 
             var arguments = new Arguments(args);
             var manager = new FindAndReplaceManager(arguments);
-            manager.Logger = (code, content) =>
+            manager.Logger = (file, content) =>
             {
-                if (code == 'C')
-                    Assert.IsTrue(content.Contains("\"Version\": \"9.1.3\""));
+                Assert.IsTrue(content.Contains("\"Version\": \"9.1.3\""));
             };
             manager.Start();
 

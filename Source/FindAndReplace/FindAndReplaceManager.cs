@@ -26,7 +26,6 @@ namespace FindAndReplace
                 if (Minimatcher.IsMatch(file))
                 {
                     filesMinimatched.Add(file);
-                    Logger?.Invoke('F', $"  . {file}");      // F = File found              
                 }
             }
 
@@ -46,12 +45,12 @@ namespace FindAndReplace
                 if (newContent != content)
                 {
                     this.FilesMatched.Add(relativeFile);
-                    Logger?.Invoke('C', relativeFile);            // C = Content replaced
+                    Logger?.Invoke(relativeFile, newContent); 
                 }
             }
         }
 
-        public Action<char, string> Logger;
+        public Action<string, string> Logger;     // FileName, Content
 
         public Arguments Arguments { get; private set; }
 
