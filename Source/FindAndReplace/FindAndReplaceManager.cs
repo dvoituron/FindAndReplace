@@ -37,13 +37,13 @@ namespace FindAndReplace
 
                 string newContent = Regex.Replace(content, Arguments.Find, Arguments.Replace, RegexOptions.IgnoreCase);
 
-                if (!Arguments.IsDemoMode)
-                {
-                    File.WriteAllText(filename, newContent);
-                }
-
                 if (newContent != content)
                 {
+					if (!Arguments.IsDemoMode)
+					{
+						File.WriteAllText(filename, newContent);
+					}
+
                     this.FilesMatched.Add(relativeFile);
                     Logger?.Invoke(relativeFile, newContent); 
                 }
