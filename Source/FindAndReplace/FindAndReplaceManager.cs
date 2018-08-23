@@ -34,22 +34,15 @@ namespace FindAndReplace
             foreach (var relativeFile in filesMinimatched)
             {
                 var filename = Arguments.BaseFolder + relativeFile;
-                bool hasBom;
-                Encoding encoding;
-                string content;
+                var file = ReadTextWithEncoding(filename);
 
-                using (var sr = new StreamReader(filename, detectEncodingFromByteOrderMarks: true)) {
-                    DetectEncoding(sr, out encoding, out hasBom);
-                    content = sr.ReadToEnd();
-                }
+                string newContent = Regex.Replace(file.Content, Arguments.Find, Arguments.Replace, RegexOptions.IgnoreCase);
 
-                string newContent = Regex.Replace(content, Arguments.Find, Arguments.Replace, RegexOptions.IgnoreCase);
-
-                if (newContent != content)
+                if (newContent != file.Content)
                 {
                     if (!Arguments.IsDemoMode)
                     {
-                        WriteTextWithEncoding(filename, newContent, encoding, hasBom);
+                        WriteTextWithEncoding(filename, newContent, file.Encoding, file.HasBom);
                     }
 
                     this.FilesMatched.Add(relativeFile);
@@ -83,18 +76,22 @@ namespace FindAndReplace
             }
         }
 
-        static private void DetectEncoding(StreamReader sr, out Encoding enc, out bool hasBom)
+        private (Encoding Encoding, bool HasBom, string Content) ReadTextWithEncoding(string filename)
         {
-            var c = sr.BaseStream.ReadByte();
-            hasBom = c == 0xEF || c == 0xFE || c == 0x00 || c == 0xFF;
+            using (var stream = new StreamReader(filename, detectEncodingFromByteOrderMarks: true))
+            {
+                int c = stream.BaseStream.ReadByte();
+                bool hasBom = c == 0xEF || c == 0xFE || c == 0x00 || c == 0xFF;
 
-            sr.BaseStream.Position = 0;
-            sr.DiscardBufferedData();
-            sr.Peek();
-            enc = sr.CurrentEncoding;
+                stream.BaseStream.Position = 0;
+                stream.DiscardBufferedData();
+                stream.Peek();
+
+                return (stream.CurrentEncoding, hasBom, stream.ReadToEnd());
+            }
         }
 
-        static private void WriteTextWithEncoding(string filename, string text, Encoding encoding, bool withBom)
+        private void WriteTextWithEncoding(string filename, string text, Encoding encoding, bool withBom)
         {
             if (withBom) {
                 File.WriteAllText(filename, text, encoding);
