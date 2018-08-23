@@ -45,8 +45,10 @@ namespace FindAndReplace
 
                 string newContent = Regex.Replace(content, Arguments.Find, Arguments.Replace, RegexOptions.IgnoreCase);
 
-                if (newContent != content) {
-                    if (!Arguments.IsDemoMode) {
+                if (newContent != content)
+                {
+                    if (!Arguments.IsDemoMode)
+                    {
                         WriteTextWithEncoding(filename, newContent, encoding, hasBom);
                     }
 
