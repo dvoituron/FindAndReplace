@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace FindAndReplace
@@ -33,16 +34,21 @@ namespace FindAndReplace
             foreach (var relativeFile in filesMinimatched)
             {
                 var filename = Arguments.BaseFolder + relativeFile;
-                string content = File.ReadAllText(filename);
+                bool hasBom;
+                Encoding encoding;
+                string content;
+
+                using (var sr = new StreamReader(filename, detectEncodingFromByteOrderMarks: true)) {
+                    DetectEncoding(sr, out encoding, out hasBom);
+                    content = sr.ReadToEnd();
+                }
 
                 string newContent = Regex.Replace(content, Arguments.Find, Arguments.Replace, RegexOptions.IgnoreCase);
 
-                if (newContent != content)
-                {
-					if (!Arguments.IsDemoMode)
-					{
-						File.WriteAllText(filename, newContent);
-					}
+                if (newContent != content) {
+                    if (!Arguments.IsDemoMode) {
+                        WriteTextWithEncoding(filename, newContent, encoding, hasBom);
+                    }
 
                     this.FilesMatched.Add(relativeFile);
                     Logger?.Invoke(relativeFile, newContent); 
@@ -72,6 +78,27 @@ namespace FindAndReplace
                     _minimatcher = new Minimatch.Minimatcher(Arguments.Pattern, options);
                 }
                 return _minimatcher;
+            }
+        }
+
+        static private void DetectEncoding(StreamReader sr, out Encoding enc, out bool hasBom)
+        {
+            var c = sr.BaseStream.ReadByte();
+            hasBom = c == 0xEF || c == 0xFE || c == 0x00 || c == 0xFF;
+
+            sr.BaseStream.Position = 0;
+            sr.DiscardBufferedData();
+            sr.Peek();
+            enc = sr.CurrentEncoding;
+        }
+
+        static private void WriteTextWithEncoding(string filename, string text, Encoding encoding, bool withBom)
+        {
+            if (withBom) {
+                File.WriteAllText(filename, text, encoding);
+            }
+            else {
+                File.WriteAllText(filename, text);
             }
         }
     }
