@@ -39,10 +39,10 @@ namespace FindAndReplace
 
                 if (newContent != content)
                 {
-					if (!Arguments.IsDemoMode)
-					{
-						File.WriteAllText(filename, newContent);
-					}
+                    if (!Arguments.IsDemoMode)
+                    {
+                        File.WriteAllText(filename, newContent);
+                    }
 
                     this.FilesMatched.Add(relativeFile);
                     Logger?.Invoke(relativeFile, newContent); 
