@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace FindAndReplace
@@ -33,15 +34,15 @@ namespace FindAndReplace
             foreach (var relativeFile in filesMinimatched)
             {
                 var filename = Arguments.BaseFolder + relativeFile;
-                string content = File.ReadAllText(filename);
+                var file = new File(filename);
 
-                string newContent = Regex.Replace(content, Arguments.Find, Arguments.Replace, RegexOptions.IgnoreCase);
+                string newContent = Regex.Replace(file.Content, Arguments.Find, Arguments.Replace, RegexOptions.IgnoreCase);
 
-                if (newContent != content)
+                if (newContent != file.Content)
                 {
                     if (!Arguments.IsDemoMode)
                     {
-                        File.WriteAllText(filename, newContent);
+                        file.WriteAllText(newContent);
                     }
 
                     this.FilesMatched.Add(relativeFile);
