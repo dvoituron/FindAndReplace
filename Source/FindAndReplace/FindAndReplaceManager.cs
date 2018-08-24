@@ -34,7 +34,7 @@ namespace FindAndReplace
             foreach (var relativeFile in filesMinimatched)
             {
                 var filename = Arguments.BaseFolder + relativeFile;
-                var file = ReadTextWithEncoding(filename);
+                var file = new File(filename);
 
                 string newContent = Regex.Replace(file.Content, Arguments.Find, Arguments.Replace, RegexOptions.IgnoreCase);
 
@@ -42,7 +42,7 @@ namespace FindAndReplace
                 {
                     if (!Arguments.IsDemoMode)
                     {
-                        WriteTextWithEncoding(filename, newContent, file.Encoding, file.HasBom);
+                        file.WriteAllText(newContent);
                     }
 
                     this.FilesMatched.Add(relativeFile);
@@ -73,31 +73,6 @@ namespace FindAndReplace
                     _minimatcher = new Minimatch.Minimatcher(Arguments.Pattern, options);
                 }
                 return _minimatcher;
-            }
-        }
-
-        private (Encoding Encoding, bool HasBom, string Content) ReadTextWithEncoding(string filename)
-        {
-            using (var stream = new StreamReader(filename, detectEncodingFromByteOrderMarks: true))
-            {
-                int c = stream.BaseStream.ReadByte();
-                bool hasBom = c == 0xEF || c == 0xFE || c == 0x00 || c == 0xFF;
-
-                stream.BaseStream.Position = 0;
-                stream.DiscardBufferedData();
-                stream.Peek();
-
-                return (stream.CurrentEncoding, hasBom, stream.ReadToEnd());
-            }
-        }
-
-        private void WriteTextWithEncoding(string filename, string text, Encoding encoding, bool withBom)
-        {
-            if (withBom) {
-                File.WriteAllText(filename, text, encoding);
-            }
-            else {
-                File.WriteAllText(filename, text);
             }
         }
     }

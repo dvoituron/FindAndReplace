@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.IO;
+using System.Text;
 
 namespace FindAndReplaceTests
 {
@@ -13,6 +14,12 @@ namespace FindAndReplaceTests
             _baseFolder = baseFolder;
 
             CreateSampleFile("First.json", "1.0.0");
+            CreateSampleFile("Encoding-UTF8.txt", "1.0.0", Encoding.UTF8);
+            CreateSampleFile("Encoding-UTF7.txt", "1.0.0", Encoding.UTF7);
+            CreateSampleFile("Encoding-UTF32.txt", "1.0.0", Encoding.UTF32);
+            CreateSampleFile("Encoding-ASCII.txt", "1.0.0", Encoding.ASCII);
+            CreateSampleFile("Encoding-BigEndianUnicode.txt", "1.0.0", Encoding.BigEndianUnicode);
+            CreateSampleFile("Encoding-Unicode.txt", "1.0.0", Encoding.Unicode);
             CreateSampleFile("SubFolder\\Second.json", "2.0.0");
             CreateSampleFile("SubFolder\\Third.json", "A.B.C");     // No digits
             CreateSampleFile("SubFolder\\Fourth.txt", "4.0.0");     // No JSON file
@@ -20,6 +27,11 @@ namespace FindAndReplaceTests
         }
 
         public void CreateSampleFile(string filename, string sampleVersion)
+        {
+            CreateSampleFile(filename, sampleVersion, null);
+        }
+
+        public void CreateSampleFile(string filename, string sampleVersion, Encoding encoding)
         {
             string content =
 @"{
@@ -40,7 +52,10 @@ namespace FindAndReplaceTests
             if (file.Exists)
                 file.Delete();
 
-            File.WriteAllText(file.FullName, content.Replace("__VERSION__", sampleVersion));
+            if (encoding == null)
+                File.WriteAllText(file.FullName, content.Replace("__VERSION__", sampleVersion));
+            else
+                File.WriteAllText(file.FullName, content.Replace("__VERSION__", sampleVersion), encoding);
         }
 
         public void CreateAppSettingsJsonFile(string filename)
